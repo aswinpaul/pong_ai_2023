@@ -9,4 +9,4 @@
 
 source /home/apaul/Desktop/miniconda/bin/activate
 
-srun --ntasks=99 -l --multi-prog ./dpefe_file.conf
+srun --ntasks=99 -l --multi-prog ./dpefe_file_2.conf

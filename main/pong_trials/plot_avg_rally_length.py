@@ -68,10 +68,10 @@ else:
         
     xx = [raw_1, raw_2]
 
-with open('data_dpefe_1_M5', 'rb') as file:
+with open('data_si_1_M1', 'rb') as file:
     score_length_1 = np.load(file, allow_pickle=True)
     
-with open('data_dpefe_1_M5', 'rb') as file:
+with open('data_si_2_M1', 'rb') as file:
     score_length_2 = np.load(file, allow_pickle=True)
 
 if(plot_raw == False):
@@ -201,7 +201,7 @@ p1 = [3.5, 4.0, 4.9, 5.4, 6.4, 6.9, 7.9, 8.4]
 
 ax.boxplot(xy, showfliers=False, showmeans=True, positions=p1)
 ax.set_xticks([0.5, 1.5, 2.5, 3.75, 5.25, 6.65, 8.15])
-ax.set_xticklabels(['MCC', 'HCC', 'IS', 'CL(2)', 'DPEFE(2)','DPEFE(5)', 'DPEFE(10)'])
+ax.set_xticklabels(['MCC', 'HCC', 'IS', 'CL(2)', 'DPEFE(2)','SI(2)', 'DPEFE(10)'])
 
 ax.set_ylabel("Average rally length")
 ax.set_title("Game play performance over time")
@@ -217,7 +217,7 @@ fig.savefig('graph.png', dpi=500, bbox_inches='tight')
 
 #%% T-tests
 
-cl_t_test_2 = scipy.stats.ttest_ind(x[0], x[1])
+cl_t_test_2 = scipy.stats.ttest_ind(xx[0], xx[1])
 cl_t_test_3 = scipy.stats.ttest_ind(y[0], y[1])
 cl_t_test_4 = scipy.stats.ttest_ind(z[0], z[1])
 

@@ -14,9 +14,10 @@ env.reset(5000);
 import os 
 import sys
 
-planning_horizon = 10
 
 mtrial = int(sys.argv[1])
+planning_horizon = int(sys.argv[2])
+
 print(mtrial)
 
 from pathlib import Path
@@ -147,10 +148,10 @@ for trial in range(n_trials):
         
         if(hit):
             r = -1
-            dpefe_agent.update_c(prev_obs, obs_list, reward = r, terminal = True)
+            dpefe_agent.update_c(prev_obs, obs_list, reward = r, terminal = False)
         if(done):
             r = 1
-            dpefe_agent.update_c(prev_obs, obs_list, reward = r, terminal = False)
+            dpefe_agent.update_c(prev_obs, obs_list, reward = r, terminal = True)
             
         if(reward > 100):
             done = True
@@ -168,8 +169,8 @@ sep_trial = 1 if sep_trial == 0 else sep_trial
 d_1 = t_length[0:sep_trial, 0]
 d_2 = t_length[sep_trial:n_trials, 0]
 
-file1 = str('data_n_plot_dpefe/') + str('data_dpefemethod_1_M10_') + str(mtrial)
-file2 = str('data_n_plot_dpefe/') + str('data_dpefemethod_2_M10_') + str(mtrial)
+file1 = str('data_n_plot_dpefe/') + str('data_dpefemethod_1_M') + str(planning_horizon) + str('_') + str(mtrial)
+file2 = str('data_n_plot_dpefe/') + str('data_dpefemethod_2_M') + str(planning_horizon) + str('_') +  str(mtrial)
 
 with open(file1, 'wb') as file:
     np.save(file, d_1)

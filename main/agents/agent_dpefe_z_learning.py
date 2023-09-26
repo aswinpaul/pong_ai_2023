@@ -120,6 +120,7 @@ class dpefe_agent_z(dpefe_agent):
                 
             # Planning
             tau_d = 0 if self.tau > self.N-2 else self.tau
+            self.melting_factors_for_planning()
             self.q_pi = softmax(-1*self.alpha*np.matmul(self.G[tau_d,:,:], self.qs_melted[0]))
             
             # Decision making         

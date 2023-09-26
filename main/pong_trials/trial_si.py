@@ -40,7 +40,7 @@ np.random.seed(mtrial);
 # self.game_state.paddle0.position.top.y,
 # self.game_state.paddle0.position.bottom.y]
 
-# o1 length: 41
+# o1 length: 38
 # o2 length: 8
 # o3 length: 8
 
@@ -148,10 +148,10 @@ for trial in range(n_trials):
         
         if(hit):
             r = -1
-            a.update_c(prev_obs, obs_list, reward = r, terminal = True)
+            a.update_c(prev_obs, obs_list, reward = r, terminal = False)
         if(done):
             r = 1
-            a.update_c(prev_obs, obs_list, reward = r, terminal = False)
+            a.update_c(prev_obs, obs_list, reward = r, terminal = True)
             
         if(reward > 100):
             done = True
