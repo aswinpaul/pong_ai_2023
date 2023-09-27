@@ -4,7 +4,7 @@ save_data_on_exit = True
 save_history = True
 save_non_project_files = False
 project_type = 'empty-project-type'
-recent_files = ['pong_trials/plot_avg_rally_length.py', 'pong_trials/plot_long_rallies.py', 'pong_trials/plot_aces.py']
+recent_files = ['pong_trials/plot_avg_rally_length.py', 'pong_trials/plot_aces.py', 'pong_trials/plot_long_rallies.py']
 
 [main]
 version = 0.2.0
