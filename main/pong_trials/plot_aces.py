@@ -77,10 +77,10 @@ for i in range(len(score_length_2)):
     
 y = [mean_1, mean_2]
 
-with open('data_dpefe_1_M2', 'rb') as file:
+with open('data_dpefe_1_M5', 'rb') as file:
     score_length_1 = np.load(file, allow_pickle=True)
     
-with open('data_dpefe_2_M2', 'rb') as file:
+with open('data_dpefe_2_M5', 'rb') as file:
     score_length_2 = np.load(file, allow_pickle=True)
     
 mean_1 = []
@@ -178,7 +178,7 @@ p1 = [3.5, 4.0, 4.9, 5.4, 6.4, 6.9, 7.9, 8.4]
 
 ax.boxplot(xy, showfliers=False, showmeans=True, positions=p1)
 ax.set_xticks([0.5, 1.5, 2.5, 3.75, 5.25, 6.65, 8.15])
-ax.set_xticklabels(['MCC', 'HCC', 'IS', 'CL(2)', 'CL(3)','SI(1)', 'DPEFE(2)'])
+ax.set_xticklabels(['MCC', 'HCC', 'IS', 'CL(2)', 'CL(3)','AIF(1)', 'DPEFE(5)'])
 
 ax.set_ylabel("% Aces")
 ax.set_title("Game play performance over time")

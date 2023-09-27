@@ -82,7 +82,7 @@ y = [mean_1, mean_2]
 with open('data_dpefe_1_M20', 'rb') as file:
     score_length_1 = np.load(file, allow_pickle=True)
     
-with open('data_dpefe_1_M20', 'rb') as file:
+with open('data_dpefe_2_M20', 'rb') as file:
     score_length_2 = np.load(file, allow_pickle=True)
     
 mean_1 = []
