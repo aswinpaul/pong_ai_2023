@@ -12,7 +12,7 @@ from pymdp.utils import random_A_matrix, random_B_matrix, obj_array_uniform, nor
 random.seed(10)
 np.random.seed(10);
 
-memory_horizon = 1
+memory_horizon = 4
 
 # generative model of the pong-game environment
 
@@ -93,6 +93,7 @@ n_trials = 70
 
 data_1 = []
 data_2 = []
+gamma_vec = np.zeros((m_trials, n_trials))
 
 for mt in range(m_trials):
     print(mt)
@@ -122,6 +123,7 @@ for mt in range(m_trials):
         reward = 0
         tau = 0
         cl_agent.tau = 0
+        gamma_vec_list = []
         
         while(done == False):
             
@@ -151,15 +153,18 @@ for mt in range(m_trials):
             tau += 1
             tau_trial += 1
             
+            gamma_vec_list.append(cl_agent.Gamma[0][0])
+            
         t_length[trial, 0] = reward
         t_length[trial, 1] = tau_trial
+        gamma_vec[mt,trial] = np.array(gamma_vec_list).min()
         
     sep = int(tau_trial/4)
     sep_trial = np.argwhere(t_length[:,1] <= sep)[-1][0]      
     sep_trial = 1 if sep_trial == 0 else sep_trial
     data_1.append(t_length[0:sep_trial, 0])
     data_2.append(t_length[sep_trial:n_trials, 0])
-
+    
 d_1 = np.array(data_1, dtype = 'object')
 d_2 = np.array(data_2, dtype = 'object')
 
@@ -170,3 +175,7 @@ with open(file1, 'wb') as file:
     np.save(file, d_1)
 with open(file2, 'wb') as file:
     np.save(file, d_2)
+    
+file_name = str('data_n_plot_cl/') + str('gamma_cl_') + str(memory_horizon) + '.npy'
+with open(file_name, 'wb') as file:
+    np.save(file, gamma_vec)

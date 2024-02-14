@@ -23,10 +23,10 @@ with open('data_clmethod_2_M1', 'rb') as file:
 if(plot_raw == False):
     mean_1 = []
     for i in range(len(score_length_1)):
-        mean_1.append(np.mean(np.clip(score_length_1[i], 0, 5)))
+        mean_1.append(np.mean(score_length_1[i]))
     mean_2 = []
     for i in range(len(score_length_2)):
-        mean_2.append(np.mean(np.clip(score_length_2[i], 0, 5)))
+        mean_2.append(np.mean(score_length_2[i]))
         
     x = [mean_1, mean_2]
     
@@ -50,10 +50,10 @@ with open('data_clmethod_2_M2', 'rb') as file:
 if(plot_raw == False):
     mean_1 = []
     for i in range(len(score_length_1)):
-        mean_1.append(np.mean(np.clip(score_length_1[i], 0, 5)))
+        mean_1.append(np.mean(score_length_1[i]))
     mean_2 = []
     for i in range(len(score_length_2)):
-        mean_2.append(np.mean(np.clip(score_length_2[i], 0, 5)))
+        mean_2.append(np.mean(score_length_2[i]))
         
     xx = [mean_1, mean_2]
     
@@ -77,10 +77,10 @@ with open('data_clmethod_2_M3', 'rb') as file:
 if(plot_raw == False):
     mean_1 = []
     for i in range(len(score_length_1)):
-        mean_1.append(np.mean(np.clip(score_length_1[i], 0, 5)))
+        mean_1.append(np.mean(score_length_1[i]))
     mean_2 = []
     for i in range(len(score_length_2)):
-        mean_2.append(np.mean(np.clip(score_length_2[i], 0, 5)))
+        mean_2.append(np.mean(score_length_2[i]))
         
     y = [mean_1, mean_2]
     
@@ -101,14 +101,13 @@ with open('data_clmethod_1_M4', 'rb') as file:
 with open('data_clmethod_2_M4', 'rb') as file:
     score_length_2 = np.load(file, allow_pickle=True)
     
-
 if(plot_raw == False):
     mean_1 = []
     for i in range(len(score_length_1)):
-        mean_1.append(np.mean(np.clip(score_length_1[i], 0, 5)))
+        mean_1.append(np.mean(score_length_1[i]))
     mean_2 = []
     for i in range(len(score_length_2)):
-        mean_2.append(np.mean(np.clip(score_length_2[i], 0, 5)))
+        mean_2.append(np.mean(score_length_2[i]))
         
     z = [mean_1, mean_2]
     
@@ -182,6 +181,8 @@ stats1 = [{'mean': average_1, 'med': median_1, 'q1': p10_1, 'q3': p90_1, 'whislo
           {'mean': average_4, 'med': median_4, 'q1': p10_4, 'q3': p90_4, 'whislo': min_val_4, 'whishi': max_val_4},
           {'mean': average_5, 'med': median_5, 'q1': p10_5, 'q3': p90_5, 'whislo': min_val_5, 'whishi': max_val_5},
           {'mean': average_6, 'med': median_6, 'q1': p10_6, 'q3': p90_6, 'whislo': min_val_6, 'whishi': max_val_6}]
+
+
 
 # %% Box Plot
 
