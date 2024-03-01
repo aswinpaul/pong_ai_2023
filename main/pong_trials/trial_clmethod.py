@@ -7,7 +7,9 @@ env.reset(5000);
 import numpy as np
 import random
 from pymdp.agent_cl import cl_agent as agent
-from pymdp.utils import random_A_matrix, random_B_matrix, obj_array_uniform, norm_dist_obj_arr   
+from pymdp.utils import random_A_matrix, random_B_matrix  
+from pymdp.utils import obj_array_uniform, norm_dist_obj_arr 
+import pandas as pd
 
 random.seed(10)
 np.random.seed(10);
@@ -22,7 +24,7 @@ memory_horizon = 4
 # self.game_state.paddle0.position.top.y,
 # self.game_state.paddle0.position.bottom.y]
 
-# o1 length: 41
+# o1 length: 38
 # o2 length: 8
 # o3 length: 8
 
@@ -86,14 +88,19 @@ D = obj_array_uniform(num_states)
 EPS_VAL = 1e-16 # Negligibleconstant
 
 #seed loops
-m_trials = 40
+m_trials = 10 #Rerun for 40
 
 #number of pong episodes in a trial
 n_trials = 70
 
+data = []
+gamma_data = []
+
+p_data = pd.DataFrame()
+g_data = pd.DataFrame()
+
 data_1 = []
 data_2 = []
-gamma_vec = np.zeros((m_trials, n_trials))
 
 for mt in range(m_trials):
     print(mt)
@@ -110,6 +117,7 @@ for mt in range(m_trials):
     
     tau_trial = 0
     t_length = np.zeros((n_trials, 2))
+    gamma_vec = np.zeros((n_trials))
     
     for trial in range(n_trials):
         
@@ -157,25 +165,36 @@ for mt in range(m_trials):
             
         t_length[trial, 0] = reward
         t_length[trial, 1] = tau_trial
-        gamma_vec[mt,trial] = np.array(gamma_vec_list).min()
+        gamma_vec[trial] = np.array(gamma_vec_list).min()
         
     sep = int(tau_trial/4)
     sep_trial = np.argwhere(t_length[:,1] <= sep)[-1][0]      
     sep_trial = 1 if sep_trial == 0 else sep_trial
-    data_1.append(t_length[0:sep_trial, 0])
-    data_2.append(t_length[sep_trial:n_trials, 0])
     
-d_1 = np.array(data_1, dtype = 'object')
-d_2 = np.array(data_2, dtype = 'object')
-
-file1 = str('data_n_plot_cl/') + str('data_clmethod_1_M') + str(memory_horizon)
-file2 = str('data_n_plot_cl/') + str('data_clmethod_2_M') + str(memory_horizon)
-
-with open(file1, 'wb') as file:
-    np.save(file, d_1)
-with open(file2, 'wb') as file:
-    np.save(file, d_2)
+    elapse_minute_rounded = (t_length[:,1]/tau_trial)*20
     
-file_name = str('data_n_plot_cl/') + str('gamma_cl_') + str(memory_horizon) + '.npy'
-with open(file_name, 'wb') as file:
-    np.save(file, gamma_vec)
+    data = {'hit_count': t_length[:, 0],
+            'session_num': np.zeros(n_trials)+mt,
+            'elapse_minute_rounded': elapse_minute_rounded.astype(int),
+            'half': np.array(list(np.zeros(sep_trial)) +
+                                   list(np.ones(n_trials - sep_trial)))
+            }
+    
+    gamma_data = {'gamma_min': gamma_vec[:],
+                'session_num': np.zeros(n_trials)+mt,
+                'elapse_minute_rounded': elapse_minute_rounded.astype(int),
+                'half': np.array(list(np.zeros(sep_trial)) +
+                                       list(np.ones(n_trials - sep_trial)))
+                }
+    
+    p_data_1 = pd.DataFrame(data)
+    p_data = pd.concat([p_data, p_data_1])
+    
+    g_data_1 = pd.DataFrame(gamma_data)
+    g_data = pd.concat([g_data, g_data_1])
+    
+file1 = str('data_n_plot_cl/') + str('data_clmethod_M') + str(memory_horizon) + '.csv'
+file2 = str('data_n_plot_cl/') + str('gamma_cl_M') + str(memory_horizon) + '.csv'
+
+p_data.to_csv(file1, index=False)
+g_data.to_csv(file2, index=False)
