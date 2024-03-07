@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-#%% Import all modules. Set path for importing dishpill_models
+#%% Import all modules. Set path for importing DishBrain original data
 
 import sys
 import numpy as np
@@ -35,59 +35,57 @@ def find_unique_ids(ids):
 df99 = pd.read_csv('in_vitro_cells_sentience.csv')
 df99 = df99[(df99['group'] == 0) | (df99['group'] == 2)]
 
-# Importing all CL data
-cl_data_1 = pd.read_csv('data_clmethod_M1.csv')
+df99['group_name'] = 99
+df99['group_name'] = np.where((df99['group']== 0), "MCC", df99['group_name'])
+df99['group_name'] = np.where((df99['group']== 1), "CTL", df99['group_name'])
+df99['group_name'] = np.where((df99['group']== 2), "HCC", df99['group_name'])
+df99['group_name'] = np.where((df99['group']== 3), "RST", df99['group_name'])
+df99['group_name'] = np.where((df99['group']== 4), "IS", df99['group_name'])
 
-#group', 'tag', 'chip_id', 'date','session_num', 'elapse_minute_rounded'
-cl_data_1['group'] = 3
-cl_data_1['tag'] = 'cl-agent-1'
-cl_data_1['date'] = '28.02.2024'
-cl_data_1['chip_id'] = 10
-cl_data_1['count'] = 1
+#%% Importing all New active-inference agent performance data
 
-# Importing all CL data 2
-cl_data_2 = pd.read_csv('data_clmethod_M2.csv')
+new_data = pd.read_csv('data_clmethod_M1.csv')
+new_data['group'] = 7
+new_data['tag'] = 'cl-agent'
+new_data['date'] = '28.02.2024'
+new_data['chip_id'] = 10
+new_data['group_name'] = "CL-1"
 
-#group', 'tag', 'chip_id', 'date','session_num', 'elapse_minute_rounded'
-cl_data_2['group'] = 4
-cl_data_2['tag'] = 'cl-agent-2'
-cl_data_2['date'] = '28.02.2024'
-cl_data_2['chip_id'] = 11
-cl_data_2['count'] = 1
+df99 = pd.concat([df99, new_data])
 
-cl_data_3 = pd.read_csv('data_clmethod_M3.csv')
+new_data = pd.read_csv('data_clmethod_M2.csv')
+new_data['group'] = 8
+new_data['tag'] = 'cl-agent-2'
+new_data['date'] = '28.02.2024'
+new_data['chip_id'] = 11
+new_data['group_name'] = "CL-2"
 
-#group', 'tag', 'chip_id', 'date','session_num', 'elapse_minute_rounded'
-cl_data_3['group'] = 5
-cl_data_3['tag'] = 'cl-agent-3'
-cl_data_3['date'] = '28.02.2024'
-cl_data_3['chip_id'] = 12
-cl_data_3['count'] = 1
+df99 = pd.concat([df99, new_data])
 
-cl_data_4 = pd.read_csv('data_clmethod_M4.csv')
+new_data = pd.read_csv('data_clmethod_M3.csv')
+new_data['group'] = 9
+new_data['tag'] = 'cl-agent-3'
+new_data['date'] = '28.02.2024'
+new_data['chip_id'] = 12
+new_data['group_name'] = "CL-3"
 
-#group', 'tag', 'chip_id', 'date','session_num', 'elapse_minute_rounded'
-cl_data_4['group'] = 6
-cl_data_4['tag'] = 'cl-agent-4'
-cl_data_4['date'] = '28.02.2024'
-cl_data_4['chip_id'] = 12
-cl_data_4['count'] = 1
+df99 = pd.concat([df99, new_data])
 
+new_data = pd.read_csv('data_clmethod_M4.csv')
+new_data['group'] = 10
+new_data['tag'] = 'cl-agent-4'
+new_data['date'] = '28.02.2024'
+new_data['chip_id'] = 13
+new_data['group_name'] = "CL-4"
 
-df99 = pd.concat([df99, cl_data_1, cl_data_2, cl_data_3, cl_data_4])
+df99 = pd.concat([df99, new_data])
+
+#%% Data cleanup
+
+# Neccesary columns for all data
 df99['long_rally'] = np.where((df99['hit_count'] >= 3), 1, 0)
 df99['ace'] = np.where((df99['hit_count'] == 0), 1, 0)
 df99["number"] = df99.index
-
-#%% Average number of episodes
-
-df99_count = df99[df99['group'] == 0 | 2]
-
-df99_count = df99_count[df99_count['chip_id']!= 7282]
-
-df_count = df99_count.groupby(['chip_id', 'date','session_num',
- 'tag','group']).size().sort_values(ascending=False).reset_index(name='count')
-
 
 # Group into minutes and take the mean.
 # Filter out data where errors in collection or cell activity have been noted.
@@ -99,14 +97,14 @@ df_count = df99_count.groupby(['chip_id', 'date','session_num',
 # due to the wrong tag being put in on one nuc so it was testing something else.
 
 df2 = df99.groupby(['group', 'tag', 'chip_id', 'date', 'session_num',
-                    'half', 'elapse_minute_rounded']).mean(numeric_only = True)
+                    'half', 'elapse_minute_rounded', 'group_name']).mean(numeric_only = True)
 
-#to analyse by timepoint we then reset the index and
+# to analyse by timepoint we then reset the index and
 # group it by the half we defined earlier.
 
 df4 = df2.reset_index()
 df5 = df4.groupby(['group', 'tag', 'chip_id', 'date',
-                   'session_num', 'half']).mean()
+                   'session_num', 'half', 'group_name']).mean(numeric_only = True)
 
 # We then reset the index again to get a single index dataframe and
 # assign a unique id to each chip
@@ -115,36 +113,14 @@ df4 = df5.reset_index()
 df4["id"] = ((df4['chip_id']).astype(str)) + (
     (df4['date']).astype(str)) +((df4['session_num']).astype(str))
 
-#Create a string name for each group for easier access
-
-df4['group_name'] = 99
-df4['group_name'] = np.where((df4['group']== 0), "MCC", df4['group_name'])
-df4['group_name'] = np.where((df4['group']== 1), "CTL", df4['group_name'])
-df4['group_name'] = np.where((df4['group']== 2), "HCC", df4['group_name'])
-df4['group_name'] = np.where((df4['group']== 3), "CL (1)", df4['group_name'])
-df4['group_name'] = np.where((df4['group']== 4), "CL (2)", df4['group_name'])
-df4['group_name'] = np.where((df4['group']== 5), "CL (3)", df4['group_name'])
-df4['group_name'] = np.where((df4['group']== 6), "CL (4)", df4['group_name'])
-
-check = df4.groupby(['group', 'half']).mean(numeric_only = True)
-#check
-
-
-#check for false starts that have no input in second half.
-false_starts = find_unique_ids(df4['id'])
-for x in false_starts:
-    df4 = df4[df4.id != x]
-
-
-#%% Long Rallies
-
-#sort by group to make plotting easier
+#%% Long Rallies box plot
 
 #box plot for long rallies
 df4['%long_rally'] = df4['long_rally']*100
 df4['%ace'] = df4['ace']*100
 
 df_test2 = df4
+
 labels = df_test2.group_name.unique()
 x_pos = np.arange(len(labels))
 
@@ -156,16 +132,15 @@ hue = df_test2['half']
 sns.set(style="darkgrid")
 sns.set(font_scale=1.4)
 
-ax = sns.boxplot(data=df99, x=x, y=y, hue=hue, palette="Set2", showfliers=False,
+ax = sns.boxplot(data=df99, x=x, y=y, hue=hue, palette="Set2", 
+                 showfliers=False,
                  showmeans = True,
                  meanprops={"markerfacecolor":"black",
                        "markeredgecolor":"black",
                       "markersize":"5"})
+
 ax.set_xticks(x_pos)
 ax.set_xticklabels(labels, fontsize=16)
-
-# ax.set_yticklabels([0,0,5,10,15,20,25,30], fontsize=16)
-# ax.set_title('Pong Performance over Time With All Features')
 
 ax.set_ylabel('% Long-Rallies',fontsize = 18)
 ax.set_xlabel('Group',fontsize = 18)
@@ -178,75 +153,11 @@ L = plt.legend(loc='upper right', bbox_to_anchor=(1.3, 1),
 L.get_texts()[0].set_text('0-5')
 L.get_texts()[1].set_text('6-20')
 
-plt.savefig('long-rallies_CLs_vs_SBI.png', bbox_inches='tight')
+plt.savefig('long-rallies_CL_vs_SBI.png', bbox_inches='tight')
+plt.show()
 
-#%% Reg plot long rally
-
-df2 = df99.groupby(['group', 'tag', 'chip_id', 'date',
-                    'session_num', 
-                    'elapse_minute_rounded']).mean(numeric_only = True)
-
-cleanDF = df2
-
-lines = cleanDF.reset_index()
-control = lines[(lines.group == 0)]
-
-control['Zhit_count'] = (control.hit_count - 
-                         control.hit_count.mean())/control.hit_count.std(ddof=0)
-control['Zhit_count'] = control['Zhit_count'].abs()
-control = control[control.Zhit_count <= 2]
-
-human = lines[(lines.group == 2)]
-human['Zhit_count'] = (human.hit_count - 
-                       human.hit_count.mean())/human.hit_count.std(ddof=0)
-human['Zhit_count'] = human['Zhit_count'].abs()
-human = human[human.Zhit_count <= 2]
-
-# rest = lines[(lines.group == 3)]
-# insilico = lines[(lines.group == 4)]
-
-cl = lines[(lines.group == 7)]
-cl['Zhit_count'] = (cl.hit_count - 
-                     cl.hit_count.mean()) / cl.hit_count.std(ddof=0)
-cl['Zhit_count'] = cl['Zhit_count'].abs()
-cl = cl[cl.Zhit_count <= 2]
-
-control['%long_rally'] = control['long_rally']*100
-control['%ace'] = control['ace']*100
-
-human['%long_rally'] = human['long_rally']*100
-human['%ace'] = human['ace']*100
-
-cl['%long_rally'] = cl['long_rally']*100
-cl['%ace'] = cl['ace']*100
-
-px = control[control['elapse_minute_rounded']<20]['elapse_minute_rounded']
-py = control[control['elapse_minute_rounded']<20]['%long_rally']
-
-hx = human[human['elapse_minute_rounded']<20]['elapse_minute_rounded']
-hy = human[human['elapse_minute_rounded']<20]['%long_rally']
-
-clx = cl[cl['elapse_minute_rounded']<20]['elapse_minute_rounded']
-cly = cl[cl['elapse_minute_rounded']<20]['%long_rally']
-
-sns.set(font_scale=1.4)
-f, ax = plt.subplots(figsize=(7,7))
-sns.regplot(x=ax.xaxis.convert_units(px), y=py, x_estimator=np.mean, ci=95, scatter = False, order = 1, label = "MCC",color='b')
-sns.regplot(x=ax.xaxis.convert_units(hx), y=hy, x_estimator=np.mean, ci=95, scatter = False, order = 1, label = "HCC",color = "#FF7D40")
-sns.regplot(x=ax.xaxis.convert_units(clx), y=cly, x_estimator=np.mean, ci=95, scatter = False, order = 1, label = "CL (T=4)",color = "g")
-
-
-sns.set(style="darkgrid")
-
-ax.set_ylabel('% Long Rallies',fontsize =20)
-ax.set_xlabel('Elapsed Minute',fontsize =20)
-plt.xlim([-0.5, 19.5])
-plt.legend(loc='upper left',fontsize =14)
-ax.grid(False)
-
-# plt.savefig('regression_lines_LongRallies_RL_v_SBI.pdf', bbox_inches='tight')
-
-#%% Aces
+#%% Aces boxplot
+plt.clf()
 
 #box plot for aces
 
@@ -259,76 +170,31 @@ y = df_test2['%ace']
 hue = df_test2['half']
 sns.set(style="darkgrid")
 sns.set(font_scale=1.4)
-ax = sns.boxplot(data=df_test2, x=x, y=y, hue=hue, palette="Set2", showfliers=False, showmeans = True,
+ax = sns.boxplot(data=df_test2, x=x, y=y, hue=hue, palette="Set2", 
+                 showfliers=False, showmeans = True,
                  meanprops={"markerfacecolor":"black",
                        "markeredgecolor":"black",
                       "markersize":"5"})
 ax.set_xticks(x_pos)
 ax.set_xticklabels(labels,fontsize = 16)
-# ax.set_yticklabels([0,0,10,20,30,40,50,60,70,80],fontsize = 16)
-#ax.set_title('Pong Performance over Time With All Features')
 ax.set_ylabel('% Aces',fontsize = 18)
 ax.set_xlabel('Group',fontsize = 18)
 ax.grid(False)
 ax.legend([0, 1], ["0-5", "6-20"],fontsize = 14)
-L = plt.legend(loc='lower left', bbox_to_anchor=(1, 0.85), title = "Minutes", borderaxespad=0.1, frameon=False)
+L = plt.legend(loc='lower left', bbox_to_anchor=(1, 0.85), 
+               title = "Minutes", borderaxespad=0.1, frameon=False)
 L.get_texts()[0].set_text('0-5')
 L.get_texts()[1].set_text('6-20')
-#ax.set_ylim([0, 2.5])
-y, h, col = 20, -1.5, 'k'
-x00, x01 = -.2, .2
-x10, x11 = .8, 1.2
-x20, x21 = 1.8, 2.2
-x30, x31 = 2.8, 3.2
-x40, x41 = 3.8, 4.2
 
-
-ax.set_ylim([10, 95])
 sns.set(rc={'figure.figsize':(6,6)})
-# #= HCC
-# % = MCC
+plt.savefig('aces_CL_vs_SBI.png', bbox_inches='tight')
+plt.show()
 
-#^ = CTL
-# @ = IS
-plt.savefig('aces_CLs_vs_SBI.png', bbox_inches='tight')
-
-#%% Reg plot aces
-
-control['%long_rally'] = control['long_rally']*100
-control['%ace'] = control['ace']*100
-
-human['%long_rally'] = human['long_rally']*100
-human['%ace'] = human['ace']*100
-
-clx = cl[cl['elapse_minute_rounded']<20]['elapse_minute_rounded']
-cly = cl[cl['elapse_minute_rounded']<20]['%ace']
-px = control[control['elapse_minute_rounded']<20]['elapse_minute_rounded']
-py = control[control['elapse_minute_rounded']<20]['%ace']
-hx = human[human['elapse_minute_rounded']<20]['elapse_minute_rounded']
-hy = human[human['elapse_minute_rounded']<20]['%ace']
-
-sns.set(font_scale=1.4)
-f, ax = plt.subplots(figsize=(7,7))
-sns.regplot(x=ax.xaxis.convert_units(px), y=py, x_estimator=np.mean, ci=95, scatter = False, order = 1, label = "MCC",color='b')
-sns.regplot(x=ax.xaxis.convert_units(hx), y=hy, x_estimator=np.mean, ci=95, scatter = False, order = 1, label = "HCC",color = "#FF7D40")
-sns.regplot(x=ax.xaxis.convert_units(clx), y=cly, x_estimator=np.mean, ci=95, scatter = False, order = 1, label = "CL (T=4)",color = "g")
-
-
-sns.set(style="darkgrid")
-
-ax.set_ylabel('% Aces',fontsize =20)
-ax.set_xlabel('Elapsed Minute',fontsize =20)
-plt.xlim([-0.5, 19.5])
-plt.legend(loc='upper left',fontsize =14)
-ax.grid(False)
-
-# plt.savefig('regression_lines_Aces_RL_v_SBI.pdf', bbox_inches='tight')
-
-#%% Average Rally Length
-
-#df_test2 = df4[(df4['group']== 0) | (df4['group'] == 2) | (df4['group'] == 7)]
+#%% Average Rally Length box plot
+plt.clf()
 
 df2 = df99.groupby(['group', 
+                    'group_name',
                     'session_num',
                     'date',
                     'tag', 'chip_id',
@@ -338,32 +204,23 @@ cleanDF = df2
 
 lines = cleanDF.reset_index()
 
-control = lines[(lines.group == 0)]
-control['Zhit_count'] = (control.hit_count - control.hit_count.mean())/control.hit_count.std(ddof=0)
-control['Zhit_count'] = control['Zhit_count'].abs()
-control = control[control.Zhit_count <= 2]
+lines['Zhit_count'] = (lines.hit_count - 
+                         lines.hit_count.mean())/lines.hit_count.std(ddof=0)
+lines['Zhit_count'] = lines['Zhit_count'].abs()
+lines = lines[lines.Zhit_count <= 2]
 
-primary = lines[(lines.group == 5)]
-primary['Zhit_count'] = (primary.hit_count - primary.hit_count.mean())/primary.hit_count.std(ddof=0)
-primary['Zhit_count'] = primary['Zhit_count'].abs()
-primary = primary[primary.Zhit_count <= 2]
+df_test = lines
 
-human = lines[(lines.group == 2)]
-human['Zhit_count'] = (human.hit_count - human.hit_count.mean())/human.hit_count.std(ddof=0)
-human['Zhit_count'] = human['Zhit_count'].abs()
-human = human[human.Zhit_count <= 2]
+labels = df_test.group_name.unique()
 
-df_test = pd.concat([control,human,primary])
-
-
-labels =['MCC', 'HCC','CL (T = 3)'] #df_test.group.unique()
 x_pos = np.arange(len(labels))
 x = df_test['group']
 y = df_test['hit_count']
 hue = df_test['half'].astype(int)
 sns.set(style="darkgrid")
 sns.set(font_scale=1.4)
-ax = sns.boxplot(data=df_test, x=x, y=y, hue=hue, palette="Set2", showfliers=False, showmeans = True,
+ax = sns.boxplot(data=df_test, x=x, y=y, hue=hue, palette="Set2", 
+                 showfliers=False, showmeans = True,
                  meanprops={"markerfacecolor":"black",
                        "markeredgecolor":"black",
                       "markersize":"5"})
@@ -373,85 +230,164 @@ ax.set_ylabel('Average Rally Length',fontsize = 18)
 ax.set_xlabel('Group',fontsize = 18)
 ax.grid(False)
 ax.legend([0, 1], ["0-5", "6-20"],fontsize = 14)
-L = plt.legend(loc='lower left', bbox_to_anchor=(1, 0.85), title = "Minutes", borderaxespad=0.1, frameon=False)
+L = plt.legend(loc='lower left', bbox_to_anchor=(1, 0.85), title = "Minutes", 
+               borderaxespad=0.1, frameon=False)
 L.get_texts()[0].set_text('0-5')
 L.get_texts()[1].set_text('6-20')
 
-# ax.set_ylim([10, 95])
 sns.set(rc={'figure.figsize':(6,6)})
 
-# plt.savefig('BAR_Pong_Over_Time_0,1half_box.pdf', bbox_inches='tight')
+plt.savefig('Avg_Rally_length_CL_vs_SBI.png', bbox_inches='tight')
+plt.show()
 
-#%% Relative Imporvement plot
+#%% RI Catplot
+
+plt.clf()
+
+#df4['pltgroup'] = df4['group']
+#df4 = df4.sort_values(by=['pltgroup'])
 
 #normalises only by group
-filtdf = df4.groupby(['group_name', "pltgroup", 'tag', 'chip_id', 'date', 'session_num', 'half']).mean(numeric_only = True)
+filtdf = df4.groupby(['group_name', "group", 'tag', 'chip_id', 'date', 
+                      'session_num', 'half']).mean(numeric_only = True)
+
 data = filtdf[['hit_count']].copy()
 data = data.unstack(level=6)
-data=data.sort_values(by=["pltgroup"])
-#data[('hit_count', 1)] = data[('hit_count', 1)].fillna(method='ffill', inplace=False)
-#data = data.dropna()
-data["normhc"] = ((data[('hit_count', 1)] - data[('hit_count', 0)]) / data[('hit_count', 0)] ) *100
+
+data = data.sort_values(by=["group_name"])
+
+data = data[data[("hit_count", 0)] != 0]
+data["normhc"] = ((data[('hit_count', 1)] - data[('hit_count', 0)]) / 
+                  data[('hit_count', 0)] ) *100
+
 data = data.reset_index()
 
-
 #bar graphs for hit count
-data2 = data[(data['group_name']== 'MCC')|(data['group_name']== 'HCC')|(data['group_name']== 'CL (3)')]
+data2 = data
 
 x = 'group_name'
 y = 'normhc'
+
 sns.set(style="darkgrid")
-sns.set(rc={'figure.figsize':(5,8)})
+sns.set(rc={'figure.figsize':(8,8)})
 sns.set(font_scale=1.4)
-ax = sns.catplot(data=data2, kind="bar",x=x, y=y, ci=95, palette="Set2", alpha=.6, height=6)
+ax = sns.catplot(data=data2, kind="bar", x=x, y=y, ci=95, palette="Set2", 
+                 alpha=.6, height=6)
 
-ax.set_axis_labels("Group", "Relative Improvement (%) Over Time",  fontsize = 20)
-ax.set_xticklabels(["MCC", "HCC", 'CL (4)'],  fontsize = 18)
+ax.set_axis_labels("Group", "Relative Improvement (%) Over Time",fontsize = 20)
 
-ax.set(ylim=(0, 145))
-# plt.savefig('Rel_Improvement_RL_vs_SBI.pdf', bbox_inches='tight')
+plt.savefig('Rel_Improvement_CL_vs_SBI.png', bbox_inches='tight')
+plt.show()
 
-
-#%% Regression RI plot
-
-data2 = data[(data['group_name']== 'MCC')|(data['group_name']== 'HCC')|(data['group_name']== 'CL (T = 4)')]
-
+#%% RI box plot
+plt.clf()
+data2 = data
 
 x = 'group_name'
 y = 'normhc'
 # hue = df_test2['half']
 sns.set(style="darkgrid")
 sns.set(font_scale=1.4)
-ax = sns.boxplot(data=data2, x=x, y=y, palette="Set2", showfliers=False, showmeans = True,
+
+ax = sns.boxplot(data=data2, x=x, y=y, palette="Set2", showfliers=False, 
+                 showmeans = True,
                  meanprops={"markerfacecolor":"black",
                        "markeredgecolor":"black",
                       "markersize":"5"})
+
 ax.set_ylabel('Relative Improvement (%) Over Time',fontsize = 18)
 ax.set_xlabel('Group',fontsize = 18)
 ax.grid(False)
-
-
-# ax.set_ylim([10, 95])
 sns.set(rc={'figure.figsize':(6,6)})
 
-# plt.savefig('Rel_Improvement_RL_vs_SBI_box.pdf', bbox_inches='tight')
+plt.savefig('Rel_Improvement_CL_vs_SBI_box.png', bbox_inches='tight')
+plt.show()
 
-#%% Regression Plots
+#%% Long rally Reg plot
 
-px = control[control['elapse_minute_rounded']<20]['elapse_minute_rounded']
-py = control[control['elapse_minute_rounded']<20]['hit_count']
-hx = human[human['elapse_minute_rounded']<20]['elapse_minute_rounded']
-hy = human[human['elapse_minute_rounded']<20]['hit_count']
-clx = cl[cl['elapse_minute_rounded']<20]['elapse_minute_rounded']
-cly = cl[cl['elapse_minute_rounded']<20]['hit_count']
+plt.clf()
+
+df2 = df99.groupby(['group', 'tag', 'chip_id', 'date',
+                    'session_num', 
+                    'elapse_minute_rounded', 
+                    'group_name']).mean(numeric_only = True)
+
+cleanDF = df2
+
+lines = cleanDF.reset_index()
+
+lines['Zhit_count'] = (lines.hit_count - 
+                         lines.hit_count.mean())/lines.hit_count.std(ddof=0)
+lines['Zhit_count'] = lines['Zhit_count'].abs()
+lines = lines[lines.Zhit_count <= 2]
+
+lines['%long_rally'] = lines['long_rally']*100
+lines['%ace'] = lines['ace']*100
 
 sns.set(font_scale=1.4)
 f, ax = plt.subplots(figsize=(7,7))
-sns.regplot(x=ax.xaxis.convert_units(px), y=py, x_estimator=np.mean, ci=95, scatter = False, order = 1, label = "MCC",color='b')
-sns.regplot(x=ax.xaxis.convert_units(hx), y=hy, x_estimator=np.mean, ci=95, scatter = False, order = 1, label = "HCC",color = "#FF7D40")
-sns.regplot(x=ax.xaxis.convert_units(clx), y=cly, x_estimator=np.mean, ci=95, scatter = False, order = 1, label = "CL (T = 4)",color = "#FF7D40")
 
+for i in lines.group.unique():
+    control = lines[lines['group'] == i]
+    label = control.group_name.unique()[0]
+    
+    px = control[control['elapse_minute_rounded']<20]['elapse_minute_rounded']
+    py = control[control['elapse_minute_rounded']<20]['%long_rally']
+    sns.regplot(x=ax.xaxis.convert_units(px), y=py, x_estimator=np.mean, ci=95, 
+            scatter = False, order = 1, label = label)
 
+sns.set(style="darkgrid")
+
+ax.set_ylabel('% Long Rallies',fontsize =20)
+ax.set_xlabel('Elapsed Minute',fontsize =20)
+#plt.xlim([0.0, 19.2])
+plt.legend(loc='upper left',fontsize =14)
+ax.grid(False)
+
+plt.savefig('regression_lines_LongRallies_CL_v_SBI.png', bbox_inches='tight')
+plt.show()
+
+#%% Aces Reg plot
+plt.clf()
+
+sns.set(font_scale=1.4)
+f, ax = plt.subplots(figsize=(7,7))
+
+for i in lines.group.unique():
+    control = lines[lines['group'] == i]
+    label = control.group_name.unique()[0]
+    
+    px = control[control['elapse_minute_rounded']<20]['elapse_minute_rounded']
+    py = control[control['elapse_minute_rounded']<20]['%ace']
+    
+    sns.regplot(x=ax.xaxis.convert_units(px), y=py, x_estimator=np.mean, ci=95, 
+            scatter = False, order = 1, label = label)
+    
+sns.set(style="darkgrid")
+ax.set_ylabel('% Aces',fontsize =20)
+ax.set_xlabel('Elapsed Minute',fontsize =20)
+plt.xlim([-0.5, 19.5])
+plt.legend(loc='upper left',fontsize =14)
+ax.grid(False)
+
+plt.savefig('regression_lines_Aces_CL_v_SBI.png', bbox_inches='tight')
+plt.show()
+
+#%% Regression Plot (Avg. hits per rally)
+
+sns.set(font_scale=1.4)
+f, ax = plt.subplots(figsize=(7,7))
+
+for i in lines.group.unique():
+    control = lines[lines['group'] == i]
+    label = control.group_name.unique()[0]
+    
+    px = control[control['elapse_minute_rounded']<20]['elapse_minute_rounded']
+    py = control[control['elapse_minute_rounded']<20]['hit_count']
+    
+    sns.regplot(x=ax.xaxis.convert_units(px), y=py, x_estimator=np.mean, ci=95, 
+            scatter = False, order = 1, label = label)
+    
 sns.set(style="darkgrid")
 
 ax.set_ylabel('Average Hits Per Rally',fontsize =20)
@@ -460,4 +396,5 @@ plt.xlim([-0.5, 19.5])
 plt.legend(loc='upper left',fontsize =14)
 ax.grid(False)
 
-# plt.savefig('regression_lines_RL_v_SBI.pdf', bbox_inches='tight')
+plt.savefig('regression_lines_RL_v_SBI.png', bbox_inches='tight')
+plt.show()

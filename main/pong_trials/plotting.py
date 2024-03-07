@@ -44,23 +44,23 @@ df99['group_name'] = np.where((df99['group']== 4), "IS", df99['group_name'])
 
 #%% Importing all New active-inference agent performance data
 
-cl_data = pd.read_csv('data_clmethod_M2.csv')
-cl_data['group'] = 7
-cl_data['tag'] = 'cl-agent'
-cl_data['date'] = '28.02.2024'
-cl_data['chip_id'] = 10
-cl_data['group_name'] = "CL-2"
+new_data = pd.read_csv('data_clmethod_M2.csv')
+new_data['group'] = 7
+new_data['tag'] = 'cl-agent'
+new_data['date'] = '28.02.2024'
+new_data['chip_id'] = 10
+new_data['group_name'] = "CL-2"
 
-df99 = pd.concat([df99, cl_data])
+df99 = pd.concat([df99, new_data])
 
-cl_data = pd.read_csv('data_clmethod_M3.csv')
-cl_data['group'] = 8
-cl_data['tag'] = 'cl-agent-2'
-cl_data['date'] = '28.02.2024'
-cl_data['chip_id'] = 11
-cl_data['group_name'] = "CL-3"
+new_data = pd.read_csv('data_clmethod_M3.csv')
+new_data['group'] = 8
+new_data['tag'] = 'cl-agent-2'
+new_data['date'] = '28.02.2024'
+new_data['chip_id'] = 11
+new_data['group_name'] = "CL-3"
 
-df99 = pd.concat([df99, cl_data])
+df99 = pd.concat([df99, new_data])
 
 #%% Data cleanup
 

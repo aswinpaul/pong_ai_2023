@@ -10,11 +10,18 @@ from pymdp.agent_cl import cl_agent as agent
 from pymdp.utils import random_A_matrix, random_B_matrix  
 from pymdp.utils import obj_array_uniform, norm_dist_obj_arr 
 import pandas as pd
+import scipy.stats as stats
 
 random.seed(10)
 np.random.seed(10);
 
 memory_horizon = 4
+
+#seed loops
+m_trials = 100
+
+#number of pong episodes in a trial
+n_trials = 70
 
 # generative model of the pong-game environment
 
@@ -87,17 +94,12 @@ D = obj_array_uniform(num_states)
 
 EPS_VAL = 1e-16 # Negligibleconstant
 
-#seed loops
-m_trials = 10 #Rerun for 40
-
-#number of pong episodes in a trial
-n_trials = 70
-
 data = []
 gamma_data = []
 
 p_data = pd.DataFrame()
 g_data = pd.DataFrame()
+c_data = pd.DataFrame()
 
 data_1 = []
 data_2 = []
@@ -118,6 +120,7 @@ for mt in range(m_trials):
     tau_trial = 0
     t_length = np.zeros((n_trials, 2))
     gamma_vec = np.zeros((n_trials))
+    entropy_CL = np.zeros((n_trials))
     
     for trial in range(n_trials):
         
@@ -165,8 +168,9 @@ for mt in range(m_trials):
             
         t_length[trial, 0] = reward
         t_length[trial, 1] = tau_trial
-        gamma_vec[trial] = np.array(gamma_vec_list).min()
-        
+        gamma_vec[trial] = np.array(gamma_vec_list).mean()
+        entropy_CL[trial] = np.sum(stats.entropy(cl_agent.CL[0]))
+            
     sep = int(tau_trial/4)
     sep_trial = np.argwhere(t_length[:,1] <= sep)[-1][0]      
     sep_trial = 1 if sep_trial == 0 else sep_trial
@@ -180,8 +184,14 @@ for mt in range(m_trials):
                                    list(np.ones(n_trials - sep_trial)))
             }
     
-    gamma_data = {'gamma_min': gamma_vec[:],
+    gamma_data = {'gamma': gamma_vec[:],
                 'session_num': np.zeros(n_trials)+mt,
+                'elapse_minute_rounded': elapse_minute_rounded.astype(int),
+                'half': np.array(list(np.zeros(sep_trial)) +
+                                       list(np.ones(n_trials - sep_trial)))
+                }
+    entropy_C = {'entropy_1': entropy_CL[:],
+                'session_num': np.zeros(n_trials) + mt,
                 'elapse_minute_rounded': elapse_minute_rounded.astype(int),
                 'half': np.array(list(np.zeros(sep_trial)) +
                                        list(np.ones(n_trials - sep_trial)))
@@ -193,8 +203,13 @@ for mt in range(m_trials):
     g_data_1 = pd.DataFrame(gamma_data)
     g_data = pd.concat([g_data, g_data_1])
     
+    c_data_1 = pd.DataFrame(entropy_C)
+    c_data = pd.concat([c_data, c_data_1])
+    
 file1 = str('data_n_plot_cl/') + str('data_clmethod_M') + str(memory_horizon) + '.csv'
 file2 = str('data_n_plot_cl/') + str('gamma_cl_M') + str(memory_horizon) + '.csv'
+file3 = str('data_n_plot_cl/') + str('c_data_M') + str(memory_horizon) + '.csv'
 
 p_data.to_csv(file1, index=False)
 g_data.to_csv(file2, index=False)
+c_data.to_csv(file3, index=False)

@@ -29,12 +29,15 @@ sys.path.append(module_path)
 import numpy as np
 import random
 # agent
-from pymdp.utils import random_A_matrix, random_B_matrix, obj_array_uniform, norm_dist_obj_arr
+from pymdp.utils import random_A_matrix, random_B_matrix, random_single_categorical
+from pymdp.utils import obj_array_uniform, norm_dist_obj_arr
 from agents.agent_dpefe_z_learning import dpefe_agent_z
+
+import scipy.stats as stats
+import pandas as pd
 
 random.seed(mtrial)
 np.random.seed(mtrial);
-
 
 # generative model of the pong-game environment
 
@@ -116,7 +119,11 @@ dpefe_agent = dpefe_agent_z(A = A,
 dpefe_agent.lr_pB = 1e+16
 
 tau_trial = 0
+
 t_length = np.zeros((n_trials, 2))
+entropy_A = np.zeros((num_modalities, n_trials))
+entropy_B = np.zeros((num_factors, n_trials))
+entropy_C = np.zeros((num_modalities, n_trials))
 
 for trial in range(n_trials):
         
@@ -162,17 +169,68 @@ for trial in range(n_trials):
     t_length[trial, 0] = reward
     t_length[trial, 1] = tau_trial
     
+    for m in range(num_modalities):
+        entropy_A[m,trial] = np.sum(stats.entropy(dpefe_agent.A[m]))
+        entropy_C[m,trial] = np.sum(stats.entropy(dpefe_agent.C[m]))
+        
+    for f in range(num_factors):
+        entropy_B[f,trial] = np.sum(stats.entropy(dpefe_agent.B[f]))
+        
 sep = int(tau_trial/4)
-sep_trial = np.argwhere(t_length[:,1] <= sep)[-1][0]      
+try:
+    sep_trial = np.argwhere(t_length[:,1] <= sep)[-1][0] 
+except:
+    sep_trial = 0
 sep_trial = 1 if sep_trial == 0 else sep_trial
 
-d_1 = t_length[0:sep_trial, 0]
-d_2 = t_length[sep_trial:n_trials, 0]
+elapse_minute_rounded = (t_length[:,1]/tau_trial)*20
+    
+data = {'hit_count': t_length[:, 0],
+        'session_num': np.zeros(n_trials) + mtrial,
+        'elapse_minute_rounded': elapse_minute_rounded.astype(int),
+        'half': np.array(list(np.zeros(sep_trial)) +
+                               list(np.ones(n_trials - sep_trial)))
+        }
 
-file1 = str('data_n_plot_dpefe/') + str('data_dpefemethod_1_M') + str(planning_horizon) + str('_') + str(mtrial)
-file2 = str('data_n_plot_dpefe/') + str('data_dpefemethod_2_M') + str(planning_horizon) + str('_') +  str(mtrial)
+entropy_A = {'entropy_1': entropy_A[0,:],
+             'entropy_2': entropy_A[1,:],
+             'entropy_3': entropy_A[2,:],
+            'session_num': np.zeros(n_trials) + mtrial,
+            'elapse_minute_rounded': elapse_minute_rounded.astype(int),
+            'half': np.array(list(np.zeros(sep_trial)) +
+                                   list(np.ones(n_trials - sep_trial)))
+            }
 
-with open(file1, 'wb') as file:
-    np.save(file, d_1)
-with open(file2, 'wb') as file:
-    np.save(file, d_2)
+entropy_C = {'entropy_1': entropy_C[0,:],
+             'entropy_2': entropy_C[1,:],
+             'entropy_3': entropy_C[2,:],
+            'session_num': np.zeros(n_trials) + mtrial,
+            'elapse_minute_rounded': elapse_minute_rounded.astype(int),
+            'half': np.array(list(np.zeros(sep_trial)) +
+                                   list(np.ones(n_trials - sep_trial)))
+            }
+
+entropy_B = {'entropy_1': entropy_B[0,:],
+             'entropy_2': entropy_B[1,:],
+             'entropy_3': entropy_B[2,:],
+            'session_num': np.zeros(n_trials) + mtrial,
+            'elapse_minute_rounded': elapse_minute_rounded.astype(int),
+            'half': np.array(list(np.zeros(sep_trial)) +
+                                   list(np.ones(n_trials - sep_trial)))
+            }
+
+p_data = pd.DataFrame(data)
+
+a_data = pd.DataFrame(entropy_A)
+b_data = pd.DataFrame(entropy_B)
+c_data = pd.DataFrame(entropy_C)
+
+file1 = str('data_n_plot_dpefe/M') + str(planning_horizon) + str('/data_') + str(mtrial) + '.csv'
+file2 = str('data_n_plot_dpefe/M') + str(planning_horizon) + str('/a_data_') +  str(mtrial) + '.csv'
+file3 = str('data_n_plot_dpefe/M') + str(planning_horizon) + str('/b_data_') +  str(mtrial) + '.csv'  
+file4 = str('data_n_plot_dpefe/M') + str(planning_horizon) + str('/c_data_') +  str(mtrial) + '.csv'
+
+p_data.to_csv(file1, index=False)
+a_data.to_csv(file2, index=False)
+b_data.to_csv(file3, index=False)
+c_data.to_csv(file4, index=False)
