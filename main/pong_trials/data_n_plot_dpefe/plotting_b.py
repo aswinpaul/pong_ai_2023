@@ -23,9 +23,10 @@ if not path in sys.path:
 
 df99 = pd.DataFrame()
 
-new_data = pd.read_csv('b_data_10.csv')
-
+new_data = pd.read_csv('b_data_5.csv')
 df99 = pd.concat([df99, new_data])
+
+#Normalising the entropy column around zero.
 df99['entropy_1'] = (df99['entropy_1']-df99['entropy_1'].mean()) / df99['entropy_1'].std()
 df99['entropy_2'] = (df99['entropy_2']-df99['entropy_2'].mean()) / df99['entropy_2'].std()
 df99['entropy_3'] = (df99['entropy_3']-df99['entropy_3'].mean()) / df99['entropy_3'].std()
@@ -74,8 +75,8 @@ ax = sns.boxplot(data=df99, x=x, y=y, hue=hue, palette="Set2", showfliers=False,
 
 ax.set_xticks(x_pos)
 ax.set_xticklabels(labels, fontsize=16)
-ax.set_ylabel('Normalised total entropy of transition matrix B',fontsize = 9)
-ax.set_xlabel('State modalities',fontsize = 18)
+ax.set_ylabel('Normalised total entropy of transition matrix B',fontsize = 14)
+ax.set_xlabel('State-Observation Modality',fontsize = 22)
 ax.grid(False)
 ax.legend([0, 1], ["0-5", "6-20"], fontsize = 14)
 
@@ -85,7 +86,7 @@ L = plt.legend(loc='upper right', bbox_to_anchor=(1.3, 1),
 L.get_texts()[0].set_text('0-5')
 L.get_texts()[1].set_text('6-20')
 
-plt.savefig('entropy_b_si_boxplot.png', bbox_inches='tight')
+plt.savefig('entropy_b_dp5_boxplot.png', bbox_inches='tight')
 plt.show()
 
 #%% Gamma Reg plot
@@ -115,9 +116,9 @@ for i in lines.group.unique():
 
 sns.set(style="darkgrid")
 
-ax.set_ylabel('Normalised total entropy of transition matrix B',fontsize =14)
+ax.set_ylabel('Normalised total entropy of transition matrix B',fontsize =16)
 ax.set_xlabel('Elapsed Minute',fontsize =20)
 plt.legend(loc='upper left',fontsize =14)
 
-plt.savefig('entropy_b_si_regression.png', bbox_inches='tight')
+plt.savefig('entropy_b_dp5_regression.png', bbox_inches='tight')
 plt.show()

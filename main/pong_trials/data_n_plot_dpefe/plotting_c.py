@@ -23,13 +23,15 @@ if not path in sys.path:
 
 df99 = pd.DataFrame()
 
-new_data = pd.read_csv('c_data_2.csv')
+new_data = pd.read_csv('c_data_5.csv')
 df99 = pd.concat([df99, new_data])
-
-df99 = pd.concat([df99, new_data])
-df99['entropy_1'] = (df99['entropy_1']-df99['entropy_1'].mean()) / df99['entropy_1'].std()
-df99['entropy_2'] = (df99['entropy_2']-df99['entropy_2'].mean()) / df99['entropy_2'].std()
-df99['entropy_3'] = (df99['entropy_3']-df99['entropy_3'].mean()) / df99['entropy_3'].std()
+#Normalising the entropy column around zero.
+df99['entropy_1'] = (df99['entropy_1']-
+                     df99['entropy_1'].mean()) / df99['entropy_1'].std()
+df99['entropy_2'] = (df99['entropy_2']-
+                     df99['entropy_2'].mean()) / df99['entropy_2'].std()
+df99['entropy_3'] = (df99['entropy_3']-
+                     df99['entropy_3'].mean()) / df99['entropy_3'].std()
 
 e1 = df99[['entropy_1', 'session_num',
        'elapse_minute_rounded', 'half']]
@@ -67,7 +69,8 @@ hue = df_test2['half']
 sns.set(style="darkgrid")
 sns.set(font_scale=1.4)
 
-ax = sns.boxplot(data=df99, x=x, y=y, hue=hue, palette="Set2", showfliers=False,
+ax = sns.boxplot(data=df99, x=x, y=y, hue=hue, palette="Set2", 
+                 showfliers=False,
                  showmeans = True,
                  meanprops= {"markerfacecolor":"black",
                        "markeredgecolor":"black",
@@ -75,8 +78,9 @@ ax = sns.boxplot(data=df99, x=x, y=y, hue=hue, palette="Set2", showfliers=False,
 
 ax.set_xticks(x_pos)
 ax.set_xticklabels(labels, fontsize=16)
-ax.set_ylabel('Total entropy of prior preference vector C',fontsize = 10)
-ax.set_xlabel('Group',fontsize = 18)
+ax.set_ylabel('Normalised total entropy of prior preference vector C',
+              fontsize = 12)
+ax.set_xlabel('State-Observation Modality',fontsize = 22)
 ax.grid(False)
 ax.legend([0, 1], ["0-5", "6-20"], fontsize = 14)
 
@@ -86,7 +90,7 @@ L = plt.legend(loc='upper right', bbox_to_anchor=(1.3, 1),
 L.get_texts()[0].set_text('0-5')
 L.get_texts()[1].set_text('6-20')
 
-plt.savefig('entropy_c_si_boxplot.png', bbox_inches='tight')
+plt.savefig('entropy_c_dp5_boxplot.png', bbox_inches='tight')
 plt.show()
 
 #%% Gamma Reg plot
@@ -116,9 +120,10 @@ for i in lines.group.unique():
 
 sns.set(style="darkgrid")
 
-ax.set_ylabel('Normalised total entropy of transition matrix C',fontsize=14)
+ax.set_ylabel('Normalised total entropy of prior preference vector C',
+              fontsize =14)
 ax.set_xlabel('Elapsed Minute',fontsize =20)
 plt.legend(loc='upper left',fontsize =14)
 
-plt.savefig('entropy_c_si_regression.png', bbox_inches='tight')
+plt.savefig('entropy_c_dp5_regression.png', bbox_inches='tight')
 plt.show()

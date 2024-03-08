@@ -25,6 +25,13 @@ df99 = pd.DataFrame()
 
 new_data = pd.read_csv('c_data.csv')
 df99 = pd.concat([df99, new_data])
+#Normalising the entropy column around zero.
+df99['entropy_1'] = (df99['entropy_1']- 
+                     df99['entropy_1'].mean()) / df99['entropy_1'].std()
+df99['entropy_2'] = (df99['entropy_2']- 
+                     df99['entropy_2'].mean()) / df99['entropy_2'].std()
+df99['entropy_3'] = (df99['entropy_3']- 
+                     df99['entropy_3'].mean()) / df99['entropy_3'].std()
 
 e1 = df99[['entropy_1', 'session_num',
        'elapse_minute_rounded', 'half']]
@@ -62,7 +69,8 @@ hue = df_test2['half']
 sns.set(style="darkgrid")
 sns.set(font_scale=1.4)
 
-ax = sns.boxplot(data=df99, x=x, y=y, hue=hue, palette="Set2", showfliers=False,
+ax = sns.boxplot(data=df99, x=x, y=y, hue=hue, palette="Set2", 
+                 showfliers=False,
                  showmeans = True,
                  meanprops= {"markerfacecolor":"black",
                        "markeredgecolor":"black",
@@ -70,8 +78,9 @@ ax = sns.boxplot(data=df99, x=x, y=y, hue=hue, palette="Set2", showfliers=False,
 
 ax.set_xticks(x_pos)
 ax.set_xticklabels(labels, fontsize=16)
-ax.set_ylabel('Total entropy of prior preference vector C',fontsize = 12)
-ax.set_xlabel('Group',fontsize = 18)
+ax.set_ylabel('Normalised total entropy of prior preference vector C',
+              fontsize = 12)
+ax.set_xlabel('State-Observation Modality',fontsize = 18)
 ax.grid(False)
 ax.legend([0, 1], ["0-5", "6-20"], fontsize = 14)
 
@@ -106,12 +115,13 @@ for i in lines.group.unique():
     px = control[control['elapse_minute_rounded']<21]['elapse_minute_rounded']
     py = control[control['elapse_minute_rounded']<21]['entropy']
     
-    sns.regplot(x=ax.xaxis.convert_units(px), y=py, x_estimator=np.mean, ci=95, 
-            scatter = False, order = 1, label = label, fit_reg=True)
+    sns.regplot(x=ax.xaxis.convert_units(px), y=py, x_estimator=np.mean, 
+                ci=95, scatter = False, order = 1, label = label, fit_reg=True)
 
 sns.set(style="darkgrid")
 
-ax.set_ylabel('Total entropy of prior preference vector C',fontsize =20)
+ax.set_ylabel('Normalised total entropy of prior preference vector C',
+              fontsize =14)
 ax.set_xlabel('Elapsed Minute',fontsize =20)
 plt.legend(loc='upper left',fontsize =14)
 

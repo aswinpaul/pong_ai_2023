@@ -67,7 +67,7 @@ ax = sns.boxplot(data=df99, x=x, y=y, hue=hue, palette="Set2", showfliers=False,
 
 ax.set_xticks(x_pos)
 ax.set_xticklabels(labels, fontsize=16)
-ax.set_ylabel('Total entropy of the CL vector',fontsize = 12)
+ax.set_ylabel('Total entropy of the CL vector',fontsize = 14)
 ax.set_xlabel('Group',fontsize = 18)
 ax.grid(False)
 ax.legend([0, 1], ["0-5", "6-20"], fontsize = 14)

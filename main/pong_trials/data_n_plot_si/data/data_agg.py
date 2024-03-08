@@ -31,7 +31,7 @@ for i in range(m_trials):
     data = pd.read_csv(file_name)
     c_data = pd.concat([c_data, data])
     
-p_data.to_csv('../p_data.csv', index=False)
-a_data.to_csv('../a_data.csv', index=False)
-b_data.to_csv('../b_data.csv', index=False)
-c_data.to_csv('../c_data.csv', index=False)
+p_data.to_csv('../p_data_si.csv', index=False)
+a_data.to_csv('../a_data_si.csv', index=False)
+b_data.to_csv('../b_data_si.csv', index=False)
+c_data.to_csv('../c_data_si.csv', index=False)

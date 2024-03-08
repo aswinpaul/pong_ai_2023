@@ -33,6 +33,7 @@ def find_unique_ids(ids):
     return [key for key, value in counts.items() if value == 1]
 
 df99 = pd.read_csv('in_vitro_cells_sentience.csv')
+df99 = df99[df99['chip_id']!= 7282]
 df99 = df99[(df99['group'] == 0) | (df99['group'] == 2)]
 
 df99['group_name'] = 99
@@ -131,7 +132,6 @@ hue = df_test2['half']
 
 sns.set(style="darkgrid")
 sns.set(font_scale=1.4)
-
 ax = sns.boxplot(data=df99, x=x, y=y, hue=hue, palette="Set2", 
                  showfliers=False,
                  showmeans = True,
@@ -147,7 +147,7 @@ ax.set_xlabel('Group',fontsize = 18)
 ax.grid(False)
 ax.legend([0, 1], ["0-5", "6-20"], fontsize = 14)
 
-L = plt.legend(loc='upper right', bbox_to_anchor=(1.3, 1),
+L = plt.legend(loc='upper right', bbox_to_anchor=(1.3, 1.1),
                title = "Minutes", borderaxespad=0.1, frameon=False)
 
 L.get_texts()[0].set_text('0-5')
@@ -182,7 +182,8 @@ ax.set_xlabel('Group',fontsize = 18)
 ax.grid(False)
 ax.legend([0, 1], ["0-5", "6-20"],fontsize = 14)
 L = plt.legend(loc='lower left', bbox_to_anchor=(1, 0.85), 
-               title = "Minutes", borderaxespad=0.1, frameon=False)
+               title = "Minutes", 
+               borderaxespad=0.1, frameon=False)
 L.get_texts()[0].set_text('0-5')
 L.get_texts()[1].set_text('6-20')
 
@@ -273,8 +274,8 @@ sns.set(rc={'figure.figsize':(8,8)})
 sns.set(font_scale=1.4)
 ax = sns.catplot(data=data2, kind="bar", x=x, y=y, ci=95, palette="Set2", 
                  alpha=.6, height=6)
-
-ax.set_axis_labels("Group", "Relative Improvement (%) Over Time",fontsize = 20)
+ax.set(ylim=(0, 180))
+ax.set_axis_labels("Group", "Relative Improvement (%) Over Time",fontsize = 18)
 
 plt.savefig('Rel_Improvement_CL_vs_SBI.png', bbox_inches='tight')
 plt.show()

@@ -33,7 +33,9 @@ def find_unique_ids(ids):
     return [key for key, value in counts.items() if value == 1]
 
 df99 = pd.read_csv('in_vitro_cells_sentience.csv')
-df99 = df99[(df99['group'] == 0) | (df99['group'] == 2)]
+df99 = df99[df99['chip_id']!= 7282]
+
+df99 = df99[(df99['group'] == 0) | (df99['group'] == 1) | (df99['group'] == 2)]
 
 df99['group_name'] = 99
 df99['group_name'] = np.where((df99['group']== 0), "MCC", df99['group_name'])
@@ -44,22 +46,28 @@ df99['group_name'] = np.where((df99['group']== 4), "IS", df99['group_name'])
 
 #%% Importing all New active-inference agent performance data
 
-new_data = pd.read_csv('data_clmethod_M2.csv')
-new_data['group'] = 7
-new_data['tag'] = 'cl-agent'
-new_data['date'] = '28.02.2024'
-new_data['chip_id'] = 10
-new_data['group_name'] = "CL-2"
-
-df99 = pd.concat([df99, new_data])
-
 new_data = pd.read_csv('data_clmethod_M3.csv')
 new_data['group'] = 8
-new_data['tag'] = 'cl-agent-2'
+new_data['tag'] = 'cl-agent-3'
 new_data['date'] = '28.02.2024'
-new_data['chip_id'] = 11
+new_data['chip_id'] = 9
 new_data['group_name'] = "CL-3"
+df99 = pd.concat([df99, new_data])
 
+new_data = pd.read_csv('p_data_5.csv')
+new_data['group'] = 9
+new_data['tag'] = 'dp-agent-2'
+new_data['date'] = '28.02.2024'
+new_data['chip_id'] = 10
+new_data['group_name'] = "DP-5"
+df99 = pd.concat([df99, new_data])
+
+new_data = pd.read_csv('p_data_si.csv')
+new_data['group'] = 11
+new_data['tag'] = 'si-agent-1'
+new_data['date'] = '28.02.2024'
+new_data['chip_id'] = 12
+new_data['group_name'] = "AIF-1"
 df99 = pd.concat([df99, new_data])
 
 #%% Data cleanup
@@ -129,13 +137,13 @@ ax.set_xlabel('Group',fontsize = 18)
 ax.grid(False)
 ax.legend([0, 1], ["0-5", "6-20"], fontsize = 14)
 
-L = plt.legend(loc='upper right', bbox_to_anchor=(1.3, 1),
+L = plt.legend(loc='upper right', bbox_to_anchor=(1.29, 1.1),
                title = "Minutes", borderaxespad=0.1, frameon=False)
 
 L.get_texts()[0].set_text('0-5')
 L.get_texts()[1].set_text('6-20')
 
-plt.savefig('long-rallies_CL_vs_SBI.png', bbox_inches='tight')
+plt.savefig('long-rallies_A_vs_SBI.png', bbox_inches='tight')
 plt.show()
 
 #%% Aces boxplot
@@ -169,7 +177,7 @@ L.get_texts()[0].set_text('0-5')
 L.get_texts()[1].set_text('6-20')
 
 sns.set(rc={'figure.figsize':(6,6)})
-plt.savefig('aces_CL_vs_SBI.png', bbox_inches='tight')
+plt.savefig('aces_A_vs_SBI.png', bbox_inches='tight')
 plt.show()
 
 #%% Average Rally Length box plot
@@ -219,18 +227,18 @@ L.get_texts()[1].set_text('6-20')
 
 sns.set(rc={'figure.figsize':(6,6)})
 
-plt.savefig('Avg_Rally_length_CL_vs_SBI.png', bbox_inches='tight')
+plt.savefig('Avg_Rally_length_A_vs_SBI.png', bbox_inches='tight')
 plt.show()
 
 #%% RI Catplot
 
 plt.clf()
 
-df4['pltgroup'] = df4['group']
-df4 = df4.sort_values(by=['pltgroup'])
+#df4['pltgroup'] = df4['group']
+#df4 = df4.sort_values(by=['pltgroup'])
 
 #normalises only by group
-filtdf = df4.groupby(['group_name', "pltgroup", 'tag', 'chip_id', 'date', 
+filtdf = df4.groupby(['group_name', "group", 'tag', 'chip_id', 'date', 
                       'session_num', 'half']).mean(numeric_only = True)
 
 data = filtdf[['hit_count']].copy()
@@ -238,6 +246,7 @@ data = data.unstack(level=6)
 
 data = data.sort_values(by=["group_name"])
 
+data = data[data[("hit_count", 0)] != 0]
 data["normhc"] = ((data[('hit_count', 1)] - data[('hit_count', 0)]) / 
                   data[('hit_count', 0)] ) *100
 
@@ -248,15 +257,16 @@ data2 = data
 
 x = 'group_name'
 y = 'normhc'
+
 sns.set(style="darkgrid")
 sns.set(rc={'figure.figsize':(8,8)})
 sns.set(font_scale=1.4)
 ax = sns.catplot(data=data2, kind="bar", x=x, y=y, ci=95, palette="Set2", 
                  alpha=.6, height=6)
 
-ax.set_axis_labels("Group", "Relative Improvement (%) Over Time",fontsize = 20)
+ax.set_axis_labels("Group", "Relative Improvement (%) Over Time",fontsize = 18)
 
-plt.savefig('Rel_Improvement_CL_vs_SBI.png', bbox_inches='tight')
+plt.savefig('Rel_Improvement_A_vs_SBI.png', bbox_inches='tight')
 plt.show()
 
 #%% RI box plot
@@ -275,12 +285,12 @@ ax = sns.boxplot(data=data2, x=x, y=y, palette="Set2", showfliers=False,
                        "markeredgecolor":"black",
                       "markersize":"5"})
 
-ax.set_ylabel('Relative Improvement (%) Over Time',fontsize = 18)
+ax.set_ylabel('Relative Improvement (%) Over Time',fontsize = 16)
 ax.set_xlabel('Group',fontsize = 18)
 ax.grid(False)
 sns.set(rc={'figure.figsize':(6,6)})
 
-plt.savefig('Rel_Improvement_CL_vs_SBI_box.png', bbox_inches='tight')
+plt.savefig('Rel_Improvement_A_vs_SBI_box.png', bbox_inches='tight')
 plt.show()
 
 #%% Long rally Reg plot
@@ -324,7 +334,7 @@ ax.set_xlabel('Elapsed Minute',fontsize =20)
 plt.legend(loc='upper left',fontsize =14)
 ax.grid(False)
 
-plt.savefig('regression_lines_LongRallies_CL_v_SBI.png', bbox_inches='tight')
+plt.savefig('regression_lines_LongRallies_AIF_v_SBI.png', bbox_inches='tight')
 plt.show()
 
 #%% Aces Reg plot
@@ -350,7 +360,7 @@ plt.xlim([-0.5, 19.5])
 plt.legend(loc='upper left',fontsize =14)
 ax.grid(False)
 
-plt.savefig('regression_lines_Aces_CL_v_SBI.png', bbox_inches='tight')
+plt.savefig('regression_lines_Aces_A_v_SBI.png', bbox_inches='tight')
 plt.show()
 
 #%% Regression Plot (Avg. hits per rally)
@@ -376,5 +386,5 @@ plt.xlim([-0.5, 19.5])
 plt.legend(loc='upper left',fontsize =14)
 ax.grid(False)
 
-plt.savefig('regression_lines_RL_v_SBI.png', bbox_inches='tight')
+plt.savefig('regression_lines_A_v_SBI.png', bbox_inches='tight')
 plt.show()
