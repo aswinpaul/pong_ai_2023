@@ -36,12 +36,20 @@ df99 = pd.read_csv('in_vitro_cells_sentience.csv')
 df99 = df99[df99['chip_id']!= 7282]
 df99 = df99[(df99['group'] == 0) | (df99['group'] == 2)]
 
+#Naming groups wrt experiment
 df99['group_name'] = 99
 df99['group_name'] = np.where((df99['group']== 0), "MCC", df99['group_name'])
 df99['group_name'] = np.where((df99['group']== 1), "CTL", df99['group_name'])
 df99['group_name'] = np.where((df99['group']== 2), "HCC", df99['group_name'])
 df99['group_name'] = np.where((df99['group']== 3), "RST", df99['group_name'])
 df99['group_name'] = np.where((df99['group']== 4), "IS", df99['group_name'])
+
+#Re-arranging group numbers to have nicer order in plots
+df99['group'] = np.where((df99['group_name'] == "MCC"), 0, df99['group'])
+df99['group'] = np.where((df99['group_name'] == "HCC"), 1, df99['group'])
+df99['group'] = np.where((df99['group_name'] == "CTL"), 2, df99['group'])
+df99['group'] = np.where((df99['group_name'] == "RST"), 3, df99['group'])
+df99['group'] = np.where((df99['group_name'] == "IS"),  4, df99['group'])
 
 #%% Importing all New active-inference agent performance data
 
@@ -255,7 +263,7 @@ filtdf = df4.groupby(['group_name', "group", 'tag', 'chip_id', 'date',
 data = filtdf[['hit_count']].copy()
 data = data.unstack(level=6)
 
-data = data.sort_values(by=["group_name"])
+data = data.sort_values(by=["group"])
 
 data = data[data[("hit_count", 0)] != 0]
 data["normhc"] = ((data[('hit_count', 1)] - data[('hit_count', 0)]) / 

@@ -78,9 +78,9 @@ ax = sns.boxplot(data=df99, x=x, y=y, hue=hue, palette="Set2",
 
 ax.set_xticks(x_pos)
 ax.set_xticklabels(labels, fontsize=16)
-ax.set_ylabel('Normalised total entropy of prior preference vector C',
-              fontsize = 12)
-ax.set_xlabel('State-Observation Modality',fontsize = 18)
+ax.set_ylabel('Normalised total entropy of prior preference C',
+              fontsize = 14)
+ax.set_xlabel('State-Observation Modality',fontsize = 22)
 ax.grid(False)
 ax.legend([0, 1], ["0-5", "6-20"], fontsize = 14)
 
@@ -120,8 +120,8 @@ for i in lines.group.unique():
 
 sns.set(style="darkgrid")
 
-ax.set_ylabel('Normalised total entropy of prior preference vector C',
-              fontsize =14)
+ax.set_ylabel('Normalised total entropy of prior preference C',
+              fontsize =16)
 ax.set_xlabel('Elapsed Minute',fontsize =20)
 plt.legend(loc='upper left',fontsize =14)
 
