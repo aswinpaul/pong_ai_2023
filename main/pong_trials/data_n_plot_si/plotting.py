@@ -96,6 +96,7 @@ df4["id"] = ((df4['chip_id']).astype(str)) + (
     (df4['date']).astype(str)) +((df4['session_num']).astype(str))
 
 #%% Long Rallies box plot
+plt.clf()
 
 #box plot for long rallies
 df4['%long_rally'] = df4['long_rally']*100
@@ -129,13 +130,13 @@ ax.set_xlabel('Group',fontsize = 18)
 ax.grid(False)
 ax.legend([0, 1], ["0-5", "6-20"], fontsize = 14)
 
-L = plt.legend(loc='upper right', bbox_to_anchor=(1.29, 1.1),
+L = plt.legend(loc='upper right', bbox_to_anchor=(1, -0.1),
                title = "Minutes", borderaxespad=0.1, frameon=False)
 
 L.get_texts()[0].set_text('0-5')
 L.get_texts()[1].set_text('6-20')
 
-plt.savefig('long-rallies_AIF_vs_SBI.png', bbox_inches='tight')
+plt.savefig('long-rallies_AIF_vs_SBI.png',dpi = 500, bbox_inches='tight')
 plt.show()
 
 #%% Aces boxplot
@@ -163,13 +164,13 @@ ax.set_ylabel('% Aces',fontsize = 18)
 ax.set_xlabel('Group',fontsize = 18)
 ax.grid(False)
 ax.legend([0, 1], ["0-5", "6-20"],fontsize = 14)
-L = plt.legend(loc='lower left', bbox_to_anchor=(1, 0.85), 
+L = plt.legend(loc='upper right', bbox_to_anchor=(1, -0.1),
                title = "Minutes", borderaxespad=0.1, frameon=False)
 L.get_texts()[0].set_text('0-5')
 L.get_texts()[1].set_text('6-20')
 
 sns.set(rc={'figure.figsize':(6,6)})
-plt.savefig('aces_AIF_vs_SBI.png', bbox_inches='tight')
+plt.savefig('aces_AIF_vs_SBI.png',dpi = 500, bbox_inches='tight')
 plt.show()
 
 #%% Average Rally Length box plot
@@ -212,14 +213,14 @@ ax.set_ylabel('Average Rally Length',fontsize = 18)
 ax.set_xlabel('Group',fontsize = 18)
 ax.grid(False)
 ax.legend([0, 1], ["0-5", "6-20"],fontsize = 14)
-L = plt.legend(loc='lower left', bbox_to_anchor=(1, 0.85), title = "Minutes", 
-               borderaxespad=0.1, frameon=False)
+L = plt.legend(loc='upper right', bbox_to_anchor=(1, -0.1),
+               title = "Minutes", borderaxespad=0.1, frameon=False)
 L.get_texts()[0].set_text('0-5')
 L.get_texts()[1].set_text('6-20')
 
 sns.set(rc={'figure.figsize':(6,6)})
 
-plt.savefig('Avg_Rally_length_AIF_vs_SBI.png', bbox_inches='tight')
+plt.savefig('Avg_Rally_length_AIF_vs_SBI.png',dpi = 500, bbox_inches='tight')
 plt.show()
 
 #%% RI Catplot
@@ -258,7 +259,7 @@ ax = sns.catplot(data=data2, kind="bar", x=x, y=y, ci=95, palette="Set2",
 
 ax.set_axis_labels("Group", "Relative Improvement (%) Over Time",fontsize = 18)
 ax.set(ylim=(0, 180))
-plt.savefig('Rel_Improvement_AIF_vs_SBI.png', bbox_inches='tight')
+plt.savefig('Rel_Improvement_AIF_vs_SBI.png',dpi = 500, bbox_inches='tight')
 plt.show()
 
 #%% RI box plot
@@ -282,7 +283,7 @@ ax.set_xlabel('Group',fontsize = 18)
 ax.grid(False)
 sns.set(rc={'figure.figsize':(6,6)})
 
-plt.savefig('Rel_Improvement_AIF_vs_SBI_box.png', bbox_inches='tight')
+plt.savefig('Rel_Improvement_AIF_vs_SBI_box.png',dpi = 500, bbox_inches='tight')
 plt.show()
 
 #%% Long rally Reg plot
@@ -326,7 +327,7 @@ ax.set_xlabel('Elapsed Minute',fontsize =20)
 plt.legend(loc='upper left',fontsize =14)
 ax.grid(False)
 
-plt.savefig('regression_lines_LongRallies_AIF_v_SBI.png', bbox_inches='tight')
+plt.savefig('regression_lines_LongRallies_AIF_v_SBI.png',dpi = 500, bbox_inches='tight')
 plt.show()
 
 #%% Aces Reg plot
@@ -352,7 +353,7 @@ plt.xlim([-0.5, 19.5])
 plt.legend(loc='upper left',fontsize =14)
 ax.grid(False)
 
-plt.savefig('regression_lines_Aces_AIF_v_SBI.png', bbox_inches='tight')
+plt.savefig('regression_lines_Aces_AIF_v_SBI.png',dpi = 500, bbox_inches='tight')
 plt.show()
 
 #%% Regression Plot (Avg. hits per rally)
@@ -378,5 +379,5 @@ plt.xlim([-0.5, 19.5])
 plt.legend(loc='upper left',fontsize =14)
 ax.grid(False)
 
-plt.savefig('regression_lines_AIF_v_SBI.png', bbox_inches='tight')
+plt.savefig('regression_lines_AIF_v_SBI.png',dpi = 500, bbox_inches='tight')
 plt.show()

@@ -84,6 +84,7 @@ df4["id"] = ((df4['chip_id']).astype(str)) + (
     (df4['date']).astype(str)) +((df4['session_num']).astype(str))
 
 #%% Long Rallies box plot
+plt.clf()
 
 #box plot for long rallies
 df4['%long_rally'] = df4['long_rally']*100
@@ -117,13 +118,13 @@ ax.set_xlabel('Group',fontsize = 18)
 ax.grid(False)
 ax.legend([0, 1], ["0-5", "6-20"], fontsize = 14)
 
-L = plt.legend(loc='upper right', bbox_to_anchor=(1.29, 1.1),
+L = plt.legend(loc='upper right', bbox_to_anchor=(1, -0.1),
                title = "Minutes", borderaxespad=0.1, frameon=False)
 
 L.get_texts()[0].set_text('0-5')
 L.get_texts()[1].set_text('6-20')
 
-plt.savefig('long-rallies_SBI_exp.png', bbox_inches='tight')
+plt.savefig('long-rallies_SBI_exp.png', dpi = 500, bbox_inches='tight')
 plt.show()
 
 #%% Aces boxplot
@@ -151,13 +152,13 @@ ax.set_ylabel('% Aces',fontsize = 18)
 ax.set_xlabel('Group',fontsize = 18)
 ax.grid(False)
 ax.legend([0, 1], ["0-5", "6-20"],fontsize = 14)
-L = plt.legend(loc='lower left', bbox_to_anchor=(1, 0.85), 
+L = plt.legend(loc='upper right', bbox_to_anchor=(1, -0.1),
                title = "Minutes", borderaxespad=0.1, frameon=False)
 L.get_texts()[0].set_text('0-5')
 L.get_texts()[1].set_text('6-20')
 
 sns.set(rc={'figure.figsize':(6,6)})
-plt.savefig('aces_A_vs_SBI_exp.png', bbox_inches='tight')
+plt.savefig('aces_A_vs_SBI_exp.png',dpi = 500, bbox_inches='tight')
 plt.show()
 
 #%% Average Rally Length box plot
@@ -200,14 +201,14 @@ ax.set_ylabel('Average Rally Length',fontsize = 18)
 ax.set_xlabel('Group',fontsize = 18)
 ax.grid(False)
 ax.legend([0, 1], ["0-5", "6-20"],fontsize = 14)
-L = plt.legend(loc='lower left', bbox_to_anchor=(1, 0.85), title = "Minutes", 
-               borderaxespad=0.1, frameon=False)
+L = plt.legend(loc='upper right', bbox_to_anchor=(1, -0.1),
+               title = "Minutes", borderaxespad=0.1, frameon=False)
 L.get_texts()[0].set_text('0-5')
 L.get_texts()[1].set_text('6-20')
 
 sns.set(rc={'figure.figsize':(6,6)})
 
-plt.savefig('Avg_Rally_length_SBI_exp.png', bbox_inches='tight')
+plt.savefig('Avg_Rally_length_SBI_exp.png',dpi = 500, bbox_inches='tight')
 plt.show()
 
 #%% RI Catplot
@@ -246,5 +247,5 @@ ax = sns.catplot(data=data2, kind="bar", x=x, y=y, ci=95, palette="Set2",
 
 ax.set_axis_labels("Group", "Relative Improvement (%) Over Time",fontsize = 18)
 
-plt.savefig('Rel_Improvement_SBI_exp.png', bbox_inches='tight')
+plt.savefig('Rel_Improvement_SBI_exp.png',dpi = 500, bbox_inches='tight')
 plt.show()

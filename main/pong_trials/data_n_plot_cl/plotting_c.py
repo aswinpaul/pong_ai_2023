@@ -81,7 +81,7 @@ L = plt.legend(loc='upper right', bbox_to_anchor=(1.3, 1),
 L.get_texts()[0].set_text('0-5')
 L.get_texts()[1].set_text('6-20')
 
-plt.savefig('entropy_cl_boxplot.png', bbox_inches='tight')
+plt.savefig('entropy_cl_boxplot.png', dpi = 500,bbox_inches='tight')
 plt.show()
 
 #%% Gamma Reg plot
@@ -115,5 +115,5 @@ ax.set_ylabel('Normalised total entropy of the CL vector',fontsize =14)
 ax.set_xlabel('Elapsed Minute',fontsize =20)
 plt.legend(loc='upper left',fontsize =14)
 
-plt.savefig('entropy_cl_regression.png', bbox_inches='tight')
+plt.savefig('entropy_cl_regression.png',dpi = 500, bbox_inches='tight')
 plt.show()
