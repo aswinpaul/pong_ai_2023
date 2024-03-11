@@ -354,7 +354,7 @@ ax.set_xlabel('Elapsed Minute',fontsize =20)
 plt.legend(loc='upper left',fontsize =14)
 ax.grid(False)
 
-plt.savefig('regression_lines_LongRallies_AIF_v_SBI.png', bbox_inches='tight')
+plt.savefig('regression_lines_LongRallies_AIF_v_SBI.png',dpi = 500, bbox_inches='tight')
 plt.show()
 
 #%% Aces Reg plot
@@ -380,7 +380,7 @@ plt.xlim([-0.5, 19.5])
 plt.legend(loc='upper left',fontsize =14)
 ax.grid(False)
 
-plt.savefig('regression_lines_Aces_AIF_v_SBI.png', bbox_inches='tight')
+plt.savefig('regression_lines_Aces_AIF_v_SBI.png',dpi = 500, bbox_inches='tight')
 plt.show()
 
 #%% Regression Plot (Avg. hits per rally)
@@ -406,5 +406,5 @@ plt.xlim([-0.5, 19.5])
 plt.legend(loc='upper left',fontsize =14)
 ax.grid(False)
 
-plt.savefig('regression_lines_AIF_v_SBI.png', bbox_inches='tight')
+plt.savefig('regression_lines_AIF_v_SBI.png',dpi = 500, bbox_inches='tight')
 plt.show()
