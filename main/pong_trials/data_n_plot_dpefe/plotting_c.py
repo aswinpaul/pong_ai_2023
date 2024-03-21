@@ -26,12 +26,11 @@ df99 = pd.DataFrame()
 new_data = pd.read_csv('c_data_5.csv')
 df99 = pd.concat([df99, new_data])
 #Normalising the entropy column around zero.
-df99['entropy_1'] = (df99['entropy_1']-
-                     df99['entropy_1'].mean()) / df99['entropy_1'].std()
-df99['entropy_2'] = (df99['entropy_2']-
-                     df99['entropy_2'].mean()) / df99['entropy_2'].std()
-df99['entropy_3'] = (df99['entropy_3']-
-                     df99['entropy_3'].mean()) / df99['entropy_3'].std()
+
+from sklearn import preprocessing
+df99['entropy_1'] = preprocessing.normalize([df99['entropy_1']], norm='max')[0]
+df99['entropy_2'] = preprocessing.normalize([df99['entropy_2']], norm='max')[0]
+df99['entropy_3'] = preprocessing.normalize([df99['entropy_3']], norm='max')[0]
 
 e1 = df99[['entropy_1', 'session_num',
        'elapse_minute_rounded', 'half']]
@@ -78,11 +77,11 @@ ax = sns.boxplot(data=df99, x=x, y=y, hue=hue, palette="Set2",
 
 ax.set_xticks(x_pos)
 ax.set_xticklabels(labels, fontsize=16)
-ax.set_ylabel('Normalised total entropy of prior preference C',
+ax.set_ylabel('NTE of prior preference $\mathbb{C}$ (DP-5)',
               fontsize = 14)
 ax.set_xlabel('State-Observation Modality',fontsize = 22)
 ax.grid(False)
-ax.legend([0, 1], ["0-5", "6-20"], fontsize = 14)
+ax.legend([0, 1], ["0-5", "6-20"], fontsize = 16)
 
 L = plt.legend(loc='upper right', bbox_to_anchor=(1.3, 1),
                title = "Minutes", borderaxespad=0.1, frameon=False)
@@ -120,8 +119,8 @@ for i in lines.group.unique():
 
 sns.set(style="darkgrid")
 
-ax.set_ylabel('Normalised total entropy of prior preference C',
-              fontsize = 16)
+ax.set_ylabel('NTE of prior preference $\mathbb{C}$ (DP-5)',
+              fontsize = 20)
 ax.set_xlabel('Elapsed Minute',fontsize =20)
 plt.legend(loc='upper left',fontsize =14)
 

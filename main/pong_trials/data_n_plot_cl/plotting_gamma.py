@@ -71,7 +71,7 @@ ax = sns.boxplot(data=df99, x=x, y=y, hue=hue, palette="Set2", showfliers=False,
 
 ax.set_xticks(x_pos)
 ax.set_xticklabels(labels, fontsize=16)
-ax.set_ylabel('Average Risk (Gamma) in log-scale',fontsize = 12)
+ax.set_ylabel('Average $\Gamma$ (Risk) in log-scale',fontsize = 15)
 ax.set_xlabel('Group',fontsize = 18)
 ax.grid(False)
 ax.legend([0, 1], ["0-5", "6-20"], fontsize = 14)
@@ -112,7 +112,7 @@ for i in lines.group.unique():
 
 sns.set(style="darkgrid")
 
-ax.set_ylabel('Average Risk (Gamma) in log-scale',fontsize =20)
+ax.set_ylabel('Average $\Gamma$ (Risk) in log-scale', fontsize = 20)
 ax.set_xlabel('Elapsed Minute',fontsize =20)
 plt.legend(loc='upper left',fontsize =14)
 

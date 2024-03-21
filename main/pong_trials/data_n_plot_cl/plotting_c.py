@@ -43,8 +43,8 @@ new_data['group_name'] = 'CL-4'
 new_data['group'] = 3
 df99 = pd.concat([df99, new_data])
 
-df99['entropy_1'] = (df99['entropy_1']-
-                     df99['entropy_1'].mean()) / df99['entropy_1'].std()
+from sklearn import preprocessing
+df99['entropy_1'] = preprocessing.normalize([df99['entropy_1']], norm='max')[0]
 
 #%%Gamma box-plot
 plt.clf()
@@ -70,7 +70,7 @@ ax = sns.boxplot(data=df99, x=x, y=y, hue=hue, palette="Set2", showfliers=False,
 
 ax.set_xticks(x_pos)
 ax.set_xticklabels(labels, fontsize=16)
-ax.set_ylabel('Normalised total entropy of the CL vector',fontsize = 10)
+ax.set_ylabel('NTE of $\mathbb{CL}$ mapping',fontsize = 15)
 ax.set_xlabel('Group',fontsize = 18)
 ax.grid(False)
 ax.legend([0, 1], ["0-5", "6-20"], fontsize = 14)
@@ -111,7 +111,7 @@ for i in lines.group.unique():
 
 sns.set(style="darkgrid")
 
-ax.set_ylabel('Normalised total entropy of the CL vector',fontsize = 18)
+ax.set_ylabel('NTE of $\mathbb{CL}$ mapping',fontsize = 20)
 ax.set_xlabel('Elapsed Minute',fontsize =20)
 plt.legend(loc='upper left',fontsize =14)
 
