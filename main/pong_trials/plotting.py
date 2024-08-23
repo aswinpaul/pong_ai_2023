@@ -59,7 +59,7 @@ new_data['group'] = 8
 new_data['tag'] = 'cl-agent-3'
 new_data['date'] = '28.02.2024'
 new_data['chip_id'] = 9
-new_data['group_name'] = "CL-3"
+new_data['group_name'] = "CFL-3"
 df99 = pd.concat([df99, new_data])
 
 new_data = pd.read_csv('p_data_5.csv')
@@ -136,7 +136,7 @@ ax = sns.boxplot(data=df99, x=x, y=y, hue=hue, palette="Set2",
                  showmeans = True,
                  meanprops={"markerfacecolor":"black",
                        "markeredgecolor":"black",
-                      "markersize":"5"})
+                      "markersize":"5"}, linewidth=0.8)
 
 ax.set_xticks(x_pos)
 ax.set_xticklabels(labels, fontsize=16)
@@ -173,7 +173,7 @@ ax = sns.boxplot(data=df_test2, x=x, y=y, hue=hue, palette="Set2",
                  showfliers=False, showmeans = True,
                  meanprops={"markerfacecolor":"black",
                        "markeredgecolor":"black",
-                      "markersize":"5"})
+                      "markersize":"5"} , linewidth=0.8)
 ax.set_xticks(x_pos)
 ax.set_xticklabels(labels,fontsize = 16)
 ax.set_ylabel('% Aces',fontsize = 18)
@@ -222,7 +222,7 @@ ax = sns.boxplot(data=df_test, x=x, y=y, hue=hue, palette="Set2",
                  showfliers=False, showmeans = True,
                  meanprops={"markerfacecolor":"black",
                        "markeredgecolor":"black",
-                      "markersize":"5"})
+                      "markersize":"5"}, linewidth=0.8)
 ax.set_xticks(x_pos)
 ax.set_xticklabels(labels,fontsize = 16)
 ax.set_ylabel('Average Rally Length',fontsize = 18)
@@ -235,7 +235,6 @@ L.get_texts()[0].set_text('0-5')
 L.get_texts()[1].set_text('6-20')
 
 sns.set(rc={'figure.figsize':(6,6)})
-
 plt.savefig('Avg_Rally_length_A_vs_SBI.png', dpi = 500, bbox_inches='tight')
 plt.show()
 

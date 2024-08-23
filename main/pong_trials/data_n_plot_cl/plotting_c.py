@@ -24,22 +24,22 @@ if not path in sys.path:
 df99 = pd.DataFrame()
 
 new_data = pd.read_csv('c_data_M1.csv')
-new_data['group_name'] = 'CL-1'
+new_data['group_name'] = 'CFL-1'
 new_data['group'] = 0
 df99 = pd.concat([df99, new_data])
 
 new_data = pd.read_csv('c_data_M2.csv')
-new_data['group_name'] = 'CL-2'
+new_data['group_name'] = 'CFL-2'
 new_data['group'] = 1
 df99 = pd.concat([df99, new_data])
 
 new_data = pd.read_csv('c_data_M3.csv')
-new_data['group_name'] = 'CL-3'
+new_data['group_name'] = 'CFL-3'
 new_data['group'] = 2
 df99 = pd.concat([df99, new_data])
 
 new_data = pd.read_csv('c_data_M4.csv')
-new_data['group_name'] = 'CL-4'
+new_data['group_name'] = 'CFL-4'
 new_data['group'] = 3
 df99 = pd.concat([df99, new_data])
 
@@ -66,7 +66,7 @@ ax = sns.boxplot(data=df99, x=x, y=y, hue=hue, palette="Set2", showfliers=False,
                  showmeans = True,
                  meanprops= {"markerfacecolor":"black",
                        "markeredgecolor":"black",
-                      "markersize":"5"})
+                      "markersize":"5"}, linewidth=0.8)
 
 ax.set_xticks(x_pos)
 ax.set_xticklabels(labels, fontsize=16)

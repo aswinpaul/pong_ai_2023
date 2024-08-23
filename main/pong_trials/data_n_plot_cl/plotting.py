@@ -58,7 +58,7 @@ new_data['group'] = 7
 new_data['tag'] = 'cl-agent'
 new_data['date'] = '28.02.2024'
 new_data['chip_id'] = 10
-new_data['group_name'] = "CL-1"
+new_data['group_name'] = "CFL-1"
 
 df99 = pd.concat([df99, new_data])
 
@@ -67,7 +67,7 @@ new_data['group'] = 8
 new_data['tag'] = 'cl-agent-2'
 new_data['date'] = '28.02.2024'
 new_data['chip_id'] = 11
-new_data['group_name'] = "CL-2"
+new_data['group_name'] = "CFL-2"
 
 df99 = pd.concat([df99, new_data])
 
@@ -76,7 +76,7 @@ new_data['group'] = 9
 new_data['tag'] = 'cl-agent-3'
 new_data['date'] = '28.02.2024'
 new_data['chip_id'] = 12
-new_data['group_name'] = "CL-3"
+new_data['group_name'] = "CFL-3"
 
 df99 = pd.concat([df99, new_data])
 
@@ -85,7 +85,7 @@ new_data['group'] = 10
 new_data['tag'] = 'cl-agent-4'
 new_data['date'] = '28.02.2024'
 new_data['chip_id'] = 13
-new_data['group_name'] = "CL-4"
+new_data['group_name'] = "CFL-4"
 
 df99 = pd.concat([df99, new_data])
 
