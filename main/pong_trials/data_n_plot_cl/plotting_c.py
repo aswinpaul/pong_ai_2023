@@ -70,12 +70,12 @@ ax = sns.boxplot(data=df99, x=x, y=y, hue=hue, palette="Set2", showfliers=False,
 
 ax.set_xticks(x_pos)
 ax.set_xticklabels(labels, fontsize=16)
-ax.set_ylabel('NTE of $\mathbb{CL}$ mapping',fontsize = 15)
-ax.set_xlabel('Group',fontsize = 18)
+ax.set_ylabel('NTE of $\mathbb{CL}$ mapping',fontsize = 14)
+ax.set_xlabel('Group',fontsize = 12)
 ax.grid(False)
-ax.legend([0, 1], ["0-5", "6-20"], fontsize = 14)
+ax.legend([1, 0], ["0-5", "6-20"], fontsize = 14)
 
-L = plt.legend(loc='upper right', bbox_to_anchor=(1.3, 1),
+L = plt.legend(loc='upper left', bbox_to_anchor=(0.7, -0.1),
                title = "Minutes", borderaxespad=0.1, frameon=False)
 
 L.get_texts()[0].set_text('0-5')
